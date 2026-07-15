@@ -124,12 +124,12 @@
             border: 1px solid rgba(255,255,255,0.6);
         }
 
-        /* ★★★ IP & Location Info (উপরে) ★★★ */
+        /* ★★★ IP & Location Info ★★★ */
         .ip-info {
             background: rgba(255,255,255,0.5);
             border-radius: 40px;
             padding: 6px 18px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             font-size: 0.75rem;
             font-weight: 500;
             color: #334155;
@@ -145,44 +145,6 @@
         .ip-info i { color: #0d9488; margin-right: 4px; font-size: 0.7rem; }
         .ip-info .divider { color: rgba(15,23,42,0.08); }
         .ip-info .ip { font-family: monospace; font-weight: 600; color: #0f172a; background: rgba(255,255,255,0.3); padding: 0 8px; border-radius: 20px; }
-
-        /* ★★★ Search Box (উপরে তুলে দেওয়া হয়েছে) ★★★ */
-        .search-box {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-        .search-box input {
-            flex: 1;
-            background: rgba(255,255,255,0.7);
-            border: 1px solid rgba(15,23,42,0.06);
-            border-radius: 60px;
-            padding: 10px 18px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            color: #0f172a;
-            outline: none;
-        }
-        .search-box input:focus {
-            border-color: #0d9488;
-            box-shadow: 0 0 0 4px rgba(13,148,136,0.06);
-        }
-        .search-box button {
-            background: #0d9488;
-            border: none;
-            color: white;
-            padding: 0 20px;
-            border-radius: 60px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.2s;
-        }
-        .search-box button:hover { background: #0f766e; transform: scale(1.02); }
 
         .weather-display { text-align: center; padding: 4px 0; }
         .weather-icon { font-size: 3.2rem; display: block; }
@@ -267,8 +229,6 @@
             .digital-time .ampm { font-size: 1.2rem; }
             .details-grid { grid-template-columns: 1fr 1fr; }
             .astro-grid { grid-template-columns: 1fr 1fr; }
-            .search-box { flex-direction: column; }
-            .search-box button { padding: 10px; justify-content: center; }
             .date-info .full-date { font-size: 0.9rem; }
         }
     </style>
@@ -309,16 +269,12 @@
 
         <!-- ===== RIGHT: WEATHER ===== -->
         <div class="weather-panel">
-            <!-- IP & Location Info (উপরে) -->
+            <!-- IP & Location Info (সার্চ বক্স বাদ) -->
             <div class="ip-info" id="ipInfo">
                 <i class="fas fa-spinner fa-spin"></i> Detecting location & IP...
             </div>
 
-            <!-- Search Box (উপরে তুলে দেওয়া হয়েছে) -->
-            <div class="search-box">
-                <input type="text" id="cityInput" placeholder="🔍 Search city (e.g. Khulna, London, NYC)" value="Dhaka">
-                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
-            </div>
+            <!-- ★★★ Search Box সম্পূর্ণ বাদ ★★★ -->
 
             <!-- Weather Content -->
             <div id="weatherContent">
@@ -398,14 +354,12 @@
     updateClock();
 
     // =============================================================
-    //  ★★★ WEATHER + IP (Multi-API Backup) ★★★
+    //  ★★★ WEATHER + IP (Multi-API Backup, No Search) ★★★
     // =============================================================
     const weatherContent = document.getElementById('weatherContent');
-    const cityInput = document.getElementById('cityInput');
-    const searchBtn = document.getElementById('searchBtn');
     const ipInfo = document.getElementById('ipInfo');
 
-    // --- Detect IP & Location with 3 backup APIs ---
+    // --- Detect IP & Location with 5 backup APIs (more robust) ---
     async function getIP() {
         const displayEl = ipInfo;
         displayEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Detecting location & IP...`;
@@ -415,7 +369,7 @@
         let region = 'N/A';
         let country = 'N/A';
 
-        // API list in order of preference
+        // API list in order of preference (5 APIs for maximum reliability)
         const apis = [
             {
                 url: 'https://ip-api.com/json/',
@@ -427,6 +381,14 @@
             },
             {
                 url: 'https://ipinfo.io/json/',
+                parse: (d) => ({ ip: d.ip, city: d.city, region: d.region, country: d.country })
+            },
+            {
+                url: 'https://api.ipify.org?format=json',
+                parse: (d) => ({ ip: d.ip, city: null, region: null, country: null })
+            },
+            {
+                url: 'https://api.ip.sb/geoip',
                 parse: (d) => ({ ip: d.ip, city: d.city, region: d.region, country: d.country })
             }
         ];
@@ -459,17 +421,20 @@
             <i class="fas fa-network-wired"></i> <span class="ip">${ip}</span>
         `;
 
-        // Auto-fill city for weather if not already set
-        if (!cityInput.value || cityInput.value === '') {
-            if (city && city !== 'N/A' && city !== '') {
-                cityInput.value = city;
-                fetchWeather(city);
-            } else {
-                cityInput.value = 'Dhaka';
-                fetchWeather('Dhaka');
-            }
+        // Auto-fetch weather for detected city
+        if (city && city !== 'N/A' && city !== '') {
+            fetchWeather(city);
         } else {
-            fetchWeather(cityInput.value);
+            // Fallback: try to get city from a secondary source
+            try {
+                const fallbackRes = await fetch('https://ipapi.co/json/');
+                const fallbackData = await fallbackRes.json();
+                if (fallbackData.city) {
+                    fetchWeather(fallbackData.city);
+                    return;
+                }
+            } catch (e) {}
+            fetchWeather('Dhaka');
         }
     }
 
@@ -477,7 +442,6 @@
     async function fetchWeather(city) {
         if (!city || city.trim() === '') {
             city = 'Dhaka';
-            cityInput.value = 'Dhaka';
         }
         weatherContent.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i> Fetching weather for "${city}"...</div>`;
         try {
@@ -490,7 +454,11 @@
             }
             renderWeather(data, city);
         } catch (err) {
-            weatherContent.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${err.message}<br><small style="font-weight:400;color:#94a3b8;font-size:0.7rem;">Try "Dhaka", "Khulna", "London"</small></div>`;
+            weatherContent.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${err.message}<br><small style="font-weight:400;color:#94a3b8;font-size:0.7rem;">Retrying with Dhaka...</small></div>`;
+            // Retry with Dhaka
+            if (city !== 'Dhaka') {
+                setTimeout(() => fetchWeather('Dhaka'), 2000);
+            }
         }
     }
 
@@ -565,20 +533,9 @@
         updateClock();
     }
 
-    // --- Event Listeners ---
-    searchBtn.addEventListener('click', () => {
-        const city = cityInput.value.trim();
-        if (city) fetchWeather(city);
-    });
-
-    cityInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchBtn.click();
-    });
-
     // Auto refresh every 10 minutes
     setInterval(() => {
-        const city = cityInput.value.trim();
-        if (city) fetchWeather(city);
+        getIP(); // Re-fetch IP and weather
     }, 600000);
 
     // --- START ---
