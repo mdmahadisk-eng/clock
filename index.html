@@ -123,29 +123,63 @@
             padding: 20px 22px 22px;
             border: 1px solid rgba(255,255,255,0.6);
         }
+
+        /* ★★★ IP & Location Info (উপরে) ★★★ */
         .ip-info {
             background: rgba(255,255,255,0.5);
-            border-radius: 40px; padding: 6px 18px; margin-bottom: 12px;
-            font-size: 0.75rem; font-weight: 500; color: #334155;
+            border-radius: 40px;
+            padding: 6px 18px;
+            margin-bottom: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #334155;
             border: 1px solid rgba(255,255,255,0.6);
-            display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
-            gap: 4px 12px; text-align: center; min-height: 36px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 4px 12px;
+            text-align: center;
+            min-height: 36px;
         }
         .ip-info i { color: #0d9488; margin-right: 4px; font-size: 0.7rem; }
         .ip-info .divider { color: rgba(15,23,42,0.08); }
         .ip-info .ip { font-family: monospace; font-weight: 600; color: #0f172a; background: rgba(255,255,255,0.3); padding: 0 8px; border-radius: 20px; }
 
-        .search-box { display: flex; gap: 8px; margin-bottom: 14px; }
-        .search-box input {
-            flex: 1; background: rgba(255,255,255,0.7); border: 1px solid rgba(15,23,42,0.06);
-            border-radius: 60px; padding: 10px 18px; font-family: 'Inter', sans-serif;
-            font-size: 0.8rem; color: #0f172a; outline: none;
+        /* ★★★ Search Box (উপরে তুলে দেওয়া হয়েছে) ★★★ */
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
         }
-        .search-box input:focus { border-color: #0d9488; box-shadow: 0 0 0 4px rgba(13,148,136,0.06); }
+        .search-box input {
+            flex: 1;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(15,23,42,0.06);
+            border-radius: 60px;
+            padding: 10px 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: #0f172a;
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: #0d9488;
+            box-shadow: 0 0 0 4px rgba(13,148,136,0.06);
+        }
         .search-box button {
-            background: #0d9488; border: none; color: white; padding: 0 20px;
-            border-radius: 60px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
-            font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px;
+            background: #0d9488;
+            border: none;
+            color: white;
+            padding: 0 20px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
             transition: 0.2s;
         }
         .search-box button:hover { background: #0f766e; transform: scale(1.02); }
@@ -159,25 +193,36 @@
         .weather-location i { color: #0d9488; margin-right: 4px; }
 
         .details-grid {
-            display: grid; grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px; margin-top: 12px; padding-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
             border-top: 1px solid rgba(15,23,42,0.04);
         }
         .detail-item {
-            background: rgba(255,255,255,0.5); border-radius: 12px; padding: 8px 6px;
-            text-align: center; border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.5);
+            border-radius: 12px;
+            padding: 8px 6px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.5);
         }
         .detail-item i { font-size: 0.8rem; color: #0d9488; display: block; margin-bottom: 2px; }
         .detail-item .label { font-size: 0.45rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; }
         .detail-item .value { font-size: 0.8rem; font-weight: 600; color: #0f172a; }
 
         .astro-grid {
-            display: grid; grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px; margin-top: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
         }
         .astro-item {
-            background: rgba(255,255,255,0.4); border-radius: 12px; padding: 6px 6px;
-            text-align: center; border: 1px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.4);
+            border-radius: 12px;
+            padding: 6px 6px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.5);
         }
         .astro-item i { font-size: 0.8rem; color: #f59e0b; display: block; margin-bottom: 2px; }
         .astro-item .label { font-size: 0.45rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; }
@@ -190,8 +235,12 @@
         .error i { font-size: 1.8rem; display: block; margin-bottom: 4px; }
 
         .footer {
-            margin-top: 24px; text-align: center; color: #94a3b8;
-            font-size: 0.65rem; font-weight: 500; border-top: 1px solid rgba(15,23,42,0.04);
+            margin-top: 24px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.65rem;
+            font-weight: 500;
+            border-top: 1px solid rgba(15,23,42,0.04);
             padding-top: 14px;
         }
         .footer i { color: #0d9488; margin: 0 4px; }
@@ -260,13 +309,18 @@
 
         <!-- ===== RIGHT: WEATHER ===== -->
         <div class="weather-panel">
+            <!-- IP & Location Info (উপরে) -->
             <div class="ip-info" id="ipInfo">
-                <i class="fas fa-spinner fa-spin"></i> Loading...
+                <i class="fas fa-spinner fa-spin"></i> Detecting location & IP...
             </div>
+
+            <!-- Search Box (উপরে তুলে দেওয়া হয়েছে) -->
             <div class="search-box">
-                <input type="text" id="cityInput" placeholder="Search city (e.g. Khulna, London)" value="Dhaka">
+                <input type="text" id="cityInput" placeholder="🔍 Search city (e.g. Khulna, London, NYC)" value="Dhaka">
                 <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
             </div>
+
+            <!-- Weather Content -->
             <div id="weatherContent">
                 <div class="loading"><i class="fas fa-spinner"></i> Loading weather...</div>
             </div>
@@ -282,7 +336,7 @@
 
 <script>
     // =============================================================
-    //  ★★★ DIGITAL CLOCK ONLY (No Analog) ★★★
+    //  ★★★ DIGITAL CLOCK ★★★
     // =============================================================
     const hrSpan = document.getElementById('hr');
     const minSpan = document.getElementById('min');
@@ -344,46 +398,82 @@
     updateClock();
 
     // =============================================================
-    //  WEATHER + IP
+    //  ★★★ WEATHER + IP (Multi-API Backup) ★★★
     // =============================================================
     const weatherContent = document.getElementById('weatherContent');
     const cityInput = document.getElementById('cityInput');
     const searchBtn = document.getElementById('searchBtn');
     const ipInfo = document.getElementById('ipInfo');
 
+    // --- Detect IP & Location with 3 backup APIs ---
     async function getIP() {
-        try {
-            const res = await fetch('https://ip-api.com/json/');
-            const data = await res.json();
-            if (data.status === 'success') {
-                const loc = `${data.city}, ${data.regionName}, ${data.country}`;
-                ipInfo.innerHTML = `<i class="fas fa-map-pin"></i> ${loc} <span class="divider">|</span> <i class="fas fa-network-wired"></i> <span class="ip">${data.query}</span>`;
-                if (!cityInput.value || cityInput.value === '') {
-                    cityInput.value = data.city || 'Dhaka';
-                    fetchWeather(data.city || 'Dhaka');
-                } else {
-                    fetchWeather(cityInput.value);
-                }
-            } else {
-                ipInfo.innerHTML = `<i class="fas fa-map-pin"></i> Unknown <span class="divider">|</span> <i class="fas fa-network-wired"></i> N/A`;
-                if (!cityInput.value || cityInput.value === '') {
-                    cityInput.value = 'Dhaka';
-                    fetchWeather('Dhaka');
-                } else {
-                    fetchWeather(cityInput.value);
-                }
+        const displayEl = ipInfo;
+        displayEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Detecting location & IP...`;
+
+        let ip = 'N/A';
+        let city = 'N/A';
+        let region = 'N/A';
+        let country = 'N/A';
+
+        // API list in order of preference
+        const apis = [
+            {
+                url: 'https://ip-api.com/json/',
+                parse: (d) => ({ ip: d.query, city: d.city, region: d.regionName, country: d.country })
+            },
+            {
+                url: 'https://ipapi.co/json/',
+                parse: (d) => ({ ip: d.ip, city: d.city, region: d.region, country: d.country_name })
+            },
+            {
+                url: 'https://ipinfo.io/json/',
+                parse: (d) => ({ ip: d.ip, city: d.city, region: d.region, country: d.country })
             }
-        } catch {
-            ipInfo.innerHTML = `<i class="fas fa-map-pin"></i> Unknown <span class="divider">|</span> <i class="fas fa-network-wired"></i> N/A`;
-            if (!cityInput.value || cityInput.value === '') {
+        ];
+
+        for (const api of apis) {
+            try {
+                const res = await fetch(api.url);
+                if (!res.ok) throw new Error('API failed');
+                const data = await res.json();
+                const parsed = api.parse(data);
+                if (parsed.ip && parsed.ip !== 'N/A' && parsed.ip !== '') {
+                    ip = parsed.ip;
+                    if (parsed.city && parsed.city !== '') city = parsed.city;
+                    if (parsed.region && parsed.region !== '') region = parsed.region;
+                    if (parsed.country && parsed.country !== '') country = parsed.country;
+                    break; // success
+                }
+            } catch (e) {
+                console.warn(`Failed to fetch from ${api.url}`, e);
+            }
+        }
+
+        // Build location string
+        const locationParts = [city, region, country].filter(p => p && p !== 'N/A' && p !== '');
+        const locationStr = locationParts.length ? locationParts.join(', ') : 'Unknown Location';
+
+        displayEl.innerHTML = `
+            <i class="fas fa-map-pin"></i> ${locationStr}
+            <span class="divider">|</span>
+            <i class="fas fa-network-wired"></i> <span class="ip">${ip}</span>
+        `;
+
+        // Auto-fill city for weather if not already set
+        if (!cityInput.value || cityInput.value === '') {
+            if (city && city !== 'N/A' && city !== '') {
+                cityInput.value = city;
+                fetchWeather(city);
+            } else {
                 cityInput.value = 'Dhaka';
                 fetchWeather('Dhaka');
-            } else {
-                fetchWeather(cityInput.value);
             }
+        } else {
+            fetchWeather(cityInput.value);
         }
     }
 
+    // --- Fetch Weather (wttr.in) ---
     async function fetchWeather(city) {
         if (!city || city.trim() === '') {
             city = 'Dhaka';
@@ -409,6 +499,7 @@
         const nearby = data.nearest_area ? data.nearest_area[0] : null;
         const loc = nearby ? nearby.areaName[0].value : city;
 
+        // ★ Update timezone from API
         if (data.timezone) {
             currentTimezone = data.timezone;
         }
@@ -470,22 +561,27 @@
             </div>
         `;
 
+        // Update clock with new timezone
         updateClock();
     }
 
+    // --- Event Listeners ---
     searchBtn.addEventListener('click', () => {
         const city = cityInput.value.trim();
         if (city) fetchWeather(city);
     });
+
     cityInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') searchBtn.click();
     });
 
+    // Auto refresh every 10 minutes
     setInterval(() => {
         const city = cityInput.value.trim();
         if (city) fetchWeather(city);
     }, 600000);
 
+    // --- START ---
     getIP();
 </script>
 
