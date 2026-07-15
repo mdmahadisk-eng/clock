@@ -3,876 +3,491 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Dashboard · Clock + Weather + IP</title>
+    <title>Smart Dashboard · Digital Clock + Weather</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        /* === Reset & Body === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 24px;
+            padding: 20px;
             background: linear-gradient(145deg, #e2f0fa 0%, #ddf2eb 50%, #f0f7fe 100%);
-            background-size: 400% 400%;
-            animation: gradientFlow 20s ease infinite;
         }
-
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .container {
-            max-width: 960px;
+            max-width: 1050px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(20px);
             border-radius: 40px;
-            padding: 32px 34px 28px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06), 0 5px 20px rgba(0, 0, 0, 0.02);
-            transition: box-shadow 0.3s ease;
+            padding: 30px 32px 25px;
+            border: 1px solid rgba(255,255,255,0.9);
+            box-shadow: 0 20px 60px rgba(15,23,42,0.06);
         }
-
-        .container:hover {
-            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.10);
-        }
-
-        /* === Header === */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 28px;
-            border-bottom: 1.5px solid rgba(15, 23, 42, 0.04);
-            padding-bottom: 16px;
+            margin-bottom: 24px;
+            border-bottom: 1.5px solid rgba(15,23,42,0.05);
+            padding-bottom: 14px;
         }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-left i { font-size: 1.8rem; color: #0d9488; }
+        .header-left h1 { color: #0f172a; font-size: 1.5rem; font-weight: 700; }
+        .header-left h1 span { color: #0d9488; }
+        .header-right .badge {
+            display: flex; align-items: center; gap: 8px;
+            color: #94a3b8; font-size: 0.7rem; font-weight: 500;
+            background: rgba(255,255,255,0.5);
+            padding: 4px 16px; border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.8);
         }
+        .badge .dot { width: 7px; height: 7px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-        .header-left i {
-            font-size: 1.8rem;
-            color: #0d9488;
-        }
-
-        .header-left h1 {
-            color: #0f172a;
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-        }
-
-        .header-left h1 span {
-            color: #0d9488;
-        }
-
-        .header-right .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #94a3b8;
-            font-size: 0.7rem;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 4px 16px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        .header-right .status-badge .dot {
-            width: 7px;
-            height: 7px;
-            background: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            animation: pulseDot 2s infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
-        }
-
-        /* === Grid Layout === */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            align-items: start;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 28px;
+            align-items: stretch;
         }
 
-        /* ===== LEFT: CLOCK ===== */
+        /* ===== CLOCK PANEL (Digital Only) ===== */
         .clock-panel {
+            background: rgba(255,255,255,0.3);
+            border-radius: 28px;
+            padding: 30px 28px;
+            border: 1px solid rgba(255,255,255,0.6);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 28px;
-            padding: 24px 20px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-        }
-
-        #clockCanvas {
-            display: block;
-            width: 240px;
-            height: 240px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.03);
-            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.02);
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 200px;
         }
 
         .digital-time {
             display: flex;
             align-items: baseline;
-            justify-content: center;
-            gap: 2px;
-            margin-top: 12px;
+            gap: 4px;
             font-weight: 700;
             color: #0f172a;
+            flex-wrap: wrap;
         }
+        .digital-time .t { font-size: 4.2rem; font-weight: 700; line-height: 1.1; }
+        .digital-time .c { font-size: 4rem; color: #0d9488; animation: blink 1s infinite; margin: 0 4px; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+        .digital-time .sec { font-size: 2rem; font-weight: 300; color: #94a3b8; margin-left: 4px; }
+        .digital-time .ampm { font-size: 1.8rem; font-weight: 600; color: #0d9488; margin-left: 8px; }
 
-        .digital-time .time-block {
-            font-size: 2.8rem;
-            font-weight: 700;
-            line-height: 1;
-            background: linear-gradient(135deg, #0f172a 60%, #475569);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .digital-time .colon {
-            font-size: 2.5rem;
-            color: #0d9488;
-            -webkit-text-fill-color: #0d9488;
-            animation: blink 1s infinite;
-            margin: 0 2px;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-
-        .digital-time .sec {
-            font-size: 1.4rem;
-            font-weight: 300;
-            color: #94a3b8;
-            -webkit-text-fill-color: #94a3b8;
-            margin-left: 2px;
-        }
-
-        .digital-time .ampm {
+        .date-info { margin-top: 6px; }
+        .date-info .day {
             font-size: 1rem;
             font-weight: 600;
             color: #0d9488;
-            -webkit-text-fill-color: #0d9488;
-            margin-left: 4px;
-        }
-
-        /* ★★★ DATE DISPLAY - FIXED & CLEAR ★★★ */
-        .date-info {
-            text-align: center;
-            margin-top: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .date-info .day {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #0d9488;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
-
         .date-info .full-date {
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             font-weight: 500;
             color: #334155;
-            letter-spacing: 0.3px;
             background: rgba(255,255,255,0.3);
-            padding: 2px 16px;
+            padding: 2px 18px;
             border-radius: 40px;
             border: 1px solid rgba(255,255,255,0.3);
+            display: inline-block;
+            margin-top: 2px;
+        }
+        .tz-info {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 18px;
+            border-radius: 40px;
+            display: inline-block;
         }
 
-        /* ===== RIGHT: WEATHER ===== */
+        /* ===== WEATHER PANEL ===== */
         .weather-panel {
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255,255,255,0.3);
             border-radius: 28px;
             padding: 20px 22px 22px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255,255,255,0.6);
         }
-
-        .ip-location-info {
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 40px;
-            padding: 6px 18px;
-            margin-bottom: 14px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #334155;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 4px 12px;
-            text-align: center;
-            line-height: 1.6;
-            min-height: 38px;
+        .ip-info {
+            background: rgba(255,255,255,0.5);
+            border-radius: 40px; padding: 6px 18px; margin-bottom: 12px;
+            font-size: 0.75rem; font-weight: 500; color: #334155;
+            border: 1px solid rgba(255,255,255,0.6);
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+            gap: 4px 12px; text-align: center; min-height: 36px;
         }
+        .ip-info i { color: #0d9488; margin-right: 4px; font-size: 0.7rem; }
+        .ip-info .divider { color: rgba(15,23,42,0.08); }
+        .ip-info .ip { font-family: monospace; font-weight: 600; color: #0f172a; background: rgba(255,255,255,0.3); padding: 0 8px; border-radius: 20px; }
 
-        .ip-location-info i {
-            color: #0d9488;
-            margin-right: 4px;
-            font-size: 0.7rem;
-        }
-
-        .ip-location-info .divider {
-            color: rgba(15, 23, 42, 0.08);
-            font-weight: 100;
-        }
-
-        .ip-location-info .ip-address {
-            font-family: 'Inter', monospace;
-            font-weight: 600;
-            color: #0f172a;
-            background: rgba(255,255,255,0.3);
-            padding: 0 8px;
-            border-radius: 20px;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
+        .search-box { display: flex; gap: 8px; margin-bottom: 14px; }
         .search-box input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(15, 23, 42, 0.06);
-            border-radius: 60px;
-            padding: 10px 18px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
-            color: #0f172a;
-            outline: none;
-            transition: all 0.3s ease;
-            text-transform: capitalize;
+            flex: 1; background: rgba(255,255,255,0.7); border: 1px solid rgba(15,23,42,0.06);
+            border-radius: 60px; padding: 10px 18px; font-family: 'Inter', sans-serif;
+            font-size: 0.8rem; color: #0f172a; outline: none;
         }
-
-        .search-box input::placeholder {
-            color: #94a3b8;
-            font-weight: 400;
-            text-transform: none;
-        }
-
-        .search-box input:focus {
-            border-color: #0d9488;
-            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.06);
-        }
-
+        .search-box input:focus { border-color: #0d9488; box-shadow: 0 0 0 4px rgba(13,148,136,0.06); }
         .search-box button {
-            background: #0d9488;
-            border: none;
-            color: white;
-            padding: 0 18px;
-            border-radius: 60px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
+            background: #0d9488; border: none; color: white; padding: 0 20px;
+            border-radius: 60px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+            font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px;
+            transition: 0.2s;
         }
+        .search-box button:hover { background: #0f766e; transform: scale(1.02); }
 
-        .search-box button:hover {
-            background: #0f766e;
-            transform: scale(1.02);
-        }
-
-        .weather-display {
-            text-align: center;
-            padding: 4px 0 2px;
-        }
-
-        .weather-icon {
-            font-size: 3.2rem;
-            display: block;
-            line-height: 1;
-        }
-
-        .weather-temp {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: #0f172a;
-            letter-spacing: -1px;
-            line-height: 1.1;
-        }
-
-        .weather-temp sup {
-            font-size: 1.4rem;
-            font-weight: 400;
-            color: #64748b;
-            top: -0.6em;
-        }
-
-        .weather-desc {
-            font-size: 1rem;
-            font-weight: 500;
-            color: #334155;
-        }
-
-        .weather-location {
-            font-size: 0.8rem;
-            color: #64748b;
-            font-weight: 400;
-        }
-        .weather-location i {
-            color: #0d9488;
-            margin-right: 4px;
-        }
+        .weather-display { text-align: center; padding: 4px 0; }
+        .weather-icon { font-size: 3.2rem; display: block; }
+        .weather-temp { font-size: 2.8rem; font-weight: 700; color: #0f172a; }
+        .weather-temp sup { font-size: 1.4rem; font-weight: 400; color: #64748b; }
+        .weather-desc { font-size: 1rem; font-weight: 500; color: #334155; }
+        .weather-location { font-size: 0.8rem; color: #64748b; }
+        .weather-location i { color: #0d9488; margin-right: 4px; }
 
         .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(15, 23, 42, 0.04);
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px; margin-top: 12px; padding-top: 12px;
+            border-top: 1px solid rgba(15,23,42,0.04);
         }
-
         .detail-item {
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 12px;
-            padding: 10px 8px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.2s ease;
+            background: rgba(255,255,255,0.5); border-radius: 12px; padding: 8px 6px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.5);
         }
+        .detail-item i { font-size: 0.8rem; color: #0d9488; display: block; margin-bottom: 2px; }
+        .detail-item .label { font-size: 0.45rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; }
+        .detail-item .value { font-size: 0.8rem; font-weight: 600; color: #0f172a; }
 
-        .detail-item:hover {
-            background: rgba(255, 255, 255, 0.8);
+        .astro-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px; margin-top: 8px;
         }
+        .astro-item {
+            background: rgba(255,255,255,0.4); border-radius: 12px; padding: 6px 6px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.5);
+        }
+        .astro-item i { font-size: 0.8rem; color: #f59e0b; display: block; margin-bottom: 2px; }
+        .astro-item .label { font-size: 0.45rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; }
+        .astro-item .value { font-size: 0.75rem; font-weight: 600; color: #0f172a; }
 
-        .detail-item i {
-            font-size: 0.9rem;
-            color: #0d9488;
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .detail-item .label {
-            font-size: 0.5rem;
-            font-weight: 600;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .detail-item .value {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .loading, .error {
-            text-align: center;
-            padding: 20px 0;
-            color: #94a3b8;
-        }
-        .loading i {
-            font-size: 1.8rem;
-            color: #0d9488;
-            animation: spin 1s linear infinite;
-            display: block;
-            margin-bottom: 8px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .error {
-            color: #ef4444;
-        }
-        .error i {
-            font-size: 1.8rem;
-            display: block;
-            margin-bottom: 4px;
-        }
+        .loading, .error { text-align: center; padding: 20px 0; color: #94a3b8; }
+        .loading i { font-size: 1.8rem; color: #0d9488; animation: spin 1s linear infinite; display: block; margin-bottom: 8px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error { color: #ef4444; }
+        .error i { font-size: 1.8rem; display: block; margin-bottom: 4px; }
 
         .footer {
-            margin-top: 28px;
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.65rem;
-            font-weight: 500;
-            border-top: 1px solid rgba(15, 23, 42, 0.04);
-            padding-top: 16px;
-            letter-spacing: 0.3px;
+            margin-top: 24px; text-align: center; color: #94a3b8;
+            font-size: 0.65rem; font-weight: 500; border-top: 1px solid rgba(15,23,42,0.04);
+            padding-top: 14px;
         }
-        .footer i {
-            color: #0d9488;
-            margin: 0 4px;
-        }
+        .footer i { color: #0d9488; margin: 0 4px; }
 
-        @media (max-width: 750px) {
+        @media (max-width: 850px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
-                gap: 24px;
+                gap: 20px;
             }
-            .container { padding: 24px 18px; border-radius: 28px; }
-            .header-left h1 { font-size: 1.3rem; }
-            #clockCanvas { width: 200px; height: 200px; }
-            .digital-time .time-block { font-size: 2.4rem; }
-            .digital-time .colon { font-size: 2.2rem; }
-            .digital-time .sec { font-size: 1.2rem; }
+            .container { padding: 20px 16px; border-radius: 28px; }
+            .clock-panel { padding: 24px 20px; align-items: center; text-align: center; }
+            .digital-time .t { font-size: 3.4rem; }
+            .digital-time .c { font-size: 3.2rem; }
+            .digital-time .sec { font-size: 1.6rem; }
+            .digital-time .ampm { font-size: 1.4rem; }
             .weather-temp { font-size: 2.4rem; }
-            .weather-icon { font-size: 2.8rem; }
-            .ip-location-info { font-size: 0.7rem; padding: 6px 14px; }
         }
 
-        @media (max-width: 400px) {
-            #clockCanvas { width: 160px; height: 160px; }
-            .digital-time .time-block { font-size: 2rem; }
-            .digital-time .colon { font-size: 1.8rem; }
-            .digital-time .sec { font-size: 1rem; }
+        @media (max-width: 500px) {
+            .clock-panel { padding: 20px 16px; }
+            .digital-time .t { font-size: 2.8rem; }
+            .digital-time .c { font-size: 2.6rem; }
+            .digital-time .sec { font-size: 1.2rem; }
+            .digital-time .ampm { font-size: 1.2rem; }
+            .details-grid { grid-template-columns: 1fr 1fr; }
+            .astro-grid { grid-template-columns: 1fr 1fr; }
             .search-box { flex-direction: column; }
             .search-box button { padding: 10px; justify-content: center; }
-            .details-grid { grid-template-columns: 1fr 1fr; }
-            .ip-location-info { flex-direction: column; gap: 2px; }
-            .ip-location-info .divider { display: none; }
+            .date-info .full-date { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <!-- === HEADER === -->
-        <div class="header">
-            <div class="header-left">
-                <i class="fas fa-cube"></i>
-                <h1>INFO <span>CENTER</span></h1>
+    <div class="header">
+        <div class="header-left">
+            <i class="fas fa-cube"></i>
+            <h1>INFO <span>CENTER</span></h1>
+        </div>
+        <div class="header-right">
+            <span class="badge"><span class="dot"></span> Online</span>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+
+        <!-- ===== LEFT: DIGITAL CLOCK ===== -->
+        <div class="clock-panel">
+            <div class="digital-time">
+                <span class="t" id="hr">00</span>
+                <span class="c">:</span>
+                <span class="t" id="min">00</span>
+                <span class="c">:</span>
+                <span class="t" id="sec">00</span>
+                <span class="sec" id="secSmall"></span>
+                <span class="ampm" id="ampm">AM</span>
             </div>
-            <div class="header-right">
-                <span class="status-badge">
-                    <span class="dot"></span> System Online
-                </span>
+            <div class="date-info">
+                <div class="day" id="dayDisplay">MONDAY</div>
+                <div class="full-date" id="dateDisplay">January 1, 2024</div>
             </div>
+            <div class="tz-info" id="tzDisplay">🕒 Asia/Dhaka</div>
         </div>
 
-        <!-- === GRID === -->
-        <div class="dashboard-grid">
-
-            <!-- ===== LEFT: CLOCK ===== -->
-            <div class="clock-panel">
-                <canvas id="clockCanvas" width="400" height="400"></canvas>
-                <div class="digital-time">
-                    <span class="time-block" id="hr">00</span>
-                    <span class="colon">:</span>
-                    <span class="time-block" id="min">00</span>
-                    <span class="colon">:</span>
-                    <span class="time-block" id="sec">00</span>
-                    <span class="sec" id="secSmall"></span>
-                    <span class="ampm" id="ampm">AM</span>
-                </div>
-                <!-- ★★★ FIXED DATE DISPLAY ★★★ -->
-                <div class="date-info">
-                    <div class="day" id="dayDisplay">Monday</div>
-                    <div class="full-date" id="dateDisplay">January 1, 2024</div>
-                </div>
+        <!-- ===== RIGHT: WEATHER ===== -->
+        <div class="weather-panel">
+            <div class="ip-info" id="ipInfo">
+                <i class="fas fa-spinner fa-spin"></i> Loading...
             </div>
-
-            <!-- ===== RIGHT: WEATHER ===== -->
-            <div class="weather-panel">
-                <div id="ipLocationInfo" class="ip-location-info">
-                    <i class="fas fa-spinner fa-spin"></i> Detecting location & IP...
-                </div>
-                <div class="search-box">
-                    <input type="text" id="cityInput" placeholder="Search city (e.g. Khulna, Dhaka)" value="Dhaka">
-                    <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
-                </div>
-                <div id="weatherContent">
-                    <div class="loading">
-                        <i class="fas fa-spinner"></i> Loading weather...
-                    </div>
-                </div>
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="Search city (e.g. Khulna, London)" value="Dhaka">
+                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
             </div>
-
-        </div>
-
-        <div class="footer">
-            <i class="fas fa-shield-alt"></i> 2026 · Internal Network · <i class="fas fa-bolt" style="color:#f59e0b;"></i> Smart Dashboard
+            <div id="weatherContent">
+                <div class="loading"><i class="fas fa-spinner"></i> Loading weather...</div>
+            </div>
         </div>
 
     </div>
 
-    <script>
-        // ============================================================
-        //  PART 1: ANALOG + DIGITAL CLOCK
-        // ============================================================
-        const canvas = document.getElementById('clockCanvas');
-        const ctx = canvas.getContext('2d');
-        const hrSpan = document.getElementById('hr');
-        const minSpan = document.getElementById('min');
-        const secSpan = document.getElementById('sec');
-        const secSmall = document.getElementById('secSmall');
-        const ampmSpan = document.getElementById('ampm');
-        const daySpan = document.getElementById('dayDisplay');
-        const dateSpan = document.getElementById('dateDisplay');
+    <div class="footer">
+        <i class="fas fa-shield-alt"></i> 2026 · <i class="fas fa-bolt" style="color:#f59e0b;"></i> Smart Dashboard · Digital Clock Only
+    </div>
 
-        function drawClock() {
-            const now = new Date();
-            const hours = now.getHours() % 12;
-            const minutes = now.getMinutes();
-            const seconds = now.getSeconds();
-            const millis = now.getMilliseconds();
+</div>
 
-            const secAngle = ((seconds + millis / 1000) / 60) * 2 * Math.PI;
-            const minAngle = ((minutes + seconds / 60) / 60) * 2 * Math.PI;
-            const hrAngle = ((hours + minutes / 60) / 12) * 2 * Math.PI;
+<script>
+    // =============================================================
+    //  ★★★ DIGITAL CLOCK ONLY (No Analog) ★★★
+    // =============================================================
+    const hrSpan = document.getElementById('hr');
+    const minSpan = document.getElementById('min');
+    const secSpan = document.getElementById('sec');
+    const secSmall = document.getElementById('secSmall');
+    const ampmSpan = document.getElementById('ampm');
+    const daySpan = document.getElementById('dayDisplay');
+    const dateSpan = document.getElementById('dateDisplay');
+    const tzSpan = document.getElementById('tzDisplay');
 
-            const radius = 190;
-            const cx = 200;
-            const cy = 200;
+    let currentTimezone = 'Asia/Dhaka';
 
-            ctx.clearRect(0, 0, 400, 400);
-
-            const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, radius);
-            grad.addColorStop(0, '#f1f5f9');
-            grad.addColorStop(1, '#e2e8f0');
-            ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
-            ctx.fillStyle = grad;
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(13, 148, 136, 0.1)';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-
-            // Hour marks
-            for (let i = 0; i < 12; i++) {
-                const angle = (i / 12) * 2 * Math.PI - Math.PI / 2;
-                const outer = radius - 16;
-                const inner = radius - 34;
-                ctx.beginPath();
-                ctx.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
-                ctx.lineTo(cx + Math.cos(angle) * outer, cy + Math.sin(angle) * outer);
-                ctx.strokeStyle = '#0f172a';
-                ctx.lineWidth = 4;
-                ctx.shadowColor = 'rgba(0,0,0,0.02)';
-                ctx.shadowBlur = 4;
-                ctx.stroke();
-            }
-            // Minute marks
-            for (let i = 0; i < 60; i++) {
-                if (i % 5 === 0) continue;
-                const angle = (i / 60) * 2 * Math.PI - Math.PI / 2;
-                const outer = radius - 18;
-                const inner = radius - 28;
-                ctx.beginPath();
-                ctx.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
-                ctx.lineTo(cx + Math.cos(angle) * outer, cy + Math.sin(angle) * outer);
-                ctx.strokeStyle = 'rgba(100,116,139,0.25)';
-                ctx.lineWidth = 2;
-                ctx.shadowBlur = 0;
-                ctx.stroke();
-            }
-            // Numbers
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = '#0f172a';
-            ctx.font = 'bold 20px Inter, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            for (let i = 1; i <= 12; i++) {
-                const angle = (i / 12) * 2 * Math.PI - Math.PI / 2;
-                const numR = radius - 48;
-                const x = cx + Math.cos(angle) * numR;
-                const y = cy + Math.sin(angle) * numR;
-                ctx.fillStyle = (i === 12) ? '#0d9488' : '#0f172a';
-                ctx.fillText(i.toString(), x, y);
-            }
-
-            // Hour Hand
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = 'rgba(13,148,136,0.15)';
-            ctx.beginPath();
-            const hrLen = radius * 0.45;
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(cx + Math.cos(hrAngle) * hrLen, cy + Math.sin(hrAngle) * hrLen);
-            ctx.strokeStyle = '#0f172a';
-            ctx.lineWidth = 6;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-
-            // Minute Hand
-            ctx.shadowColor = 'rgba(37,99,235,0.1)';
-            ctx.beginPath();
-            const minLen = radius * 0.55;
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(cx + Math.cos(minAngle) * minLen, cy + Math.sin(minAngle) * minLen);
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-
-            // Second Hand
-            ctx.shadowColor = 'rgba(236,72,153,0.15)';
-            ctx.beginPath();
-            const secLen = radius * 0.6;
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(cx + Math.cos(secAngle) * secLen, cy + Math.sin(secAngle) * secLen);
-            ctx.strokeStyle = '#f472b6';
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            ctx.stroke();
-
-            // Center dot
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = 'rgba(13,148,136,0.2)';
-            ctx.beginPath();
-            ctx.arc(cx, cy, 8, 0, 2 * Math.PI);
-            ctx.fillStyle = '#0d9488';
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            ctx.beginPath();
-            ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
-            ctx.fillStyle = '#f1f5f9';
-            ctx.fill();
-            ctx.shadowBlur = 0;
+    function getClockTime() {
+        const now = new Date();
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: currentTimezone,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+        const parts = formatter.formatToParts(now);
+        let h = 0, m = 0, s = 0;
+        for (const p of parts) {
+            if (p.type === 'hour') h = parseInt(p.value, 10);
+            if (p.type === 'minute') m = parseInt(p.value, 10);
+            if (p.type === 'second') s = parseInt(p.value, 10);
         }
+        return { hours: h, minutes: m, seconds: s };
+    }
 
-        function updateDigital() {
-            const now = new Date();
-            let h = now.getHours();
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            const ampm = h >= 12 ? 'PM' : 'AM';
-            h = h % 12 || 12;
-            hrSpan.textContent = String(h).padStart(2, '0');
-            minSpan.textContent = m;
-            secSpan.textContent = s;
-            secSmall.textContent = s;
-            ampmSpan.textContent = ampm;
+    function updateDigitalTime(h, m, s) {
+        const h12 = h % 12 || 12;
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        hrSpan.textContent = String(h12).padStart(2, '0');
+        minSpan.textContent = String(m).padStart(2, '0');
+        secSpan.textContent = String(s).padStart(2, '0');
+        secSmall.textContent = String(s).padStart(2, '0');
+        ampmSpan.textContent = ampm;
+    }
 
-            // ★★★ DATE FIX: Use 'en-GB' for consistent day-month-year order ★★★
-            const opts = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                timeZone: 'Asia/Dhaka'  // বাংলাদেশ টাইমজোন
-            };
-            const full = now.toLocaleDateString('en-US', opts);
-            // Split: "Wednesday, July 15, 2026" -> ["Wednesday,", "July", "15,", "2026"]
-            const parts = full.split(' ');
-            const dayName = parts[0].replace(',', ''); // "Wednesday"
-            // Rest: "July 15, 2026"
-            const rest = parts.slice(1).join(' ').replace(',', ''); 
-            // Now format: "July 15, 2026" – clean
+    function updateDate() {
+        const now = new Date();
+        const opts = { timeZone: currentTimezone, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+        const full = now.toLocaleDateString('en-US', opts);
+        const parts = full.split(' ');
+        daySpan.textContent = parts[0].replace(',', '').toUpperCase();
+        dateSpan.textContent = parts.slice(1).join(' ').replace(',', '');
+        tzSpan.textContent = `🕒 ${currentTimezone}`;
+    }
 
-            daySpan.textContent = dayName.toUpperCase();
-            dateSpan.textContent = rest;
-        }
+    function updateClock() {
+        const time = getClockTime();
+        updateDigitalTime(time.hours, time.minutes, time.seconds);
+        updateDate();
+    }
 
-        function updateClock() {
-            drawClock();
-            updateDigital();
-            requestAnimationFrame(updateClock);
-        }
-        updateClock();
+    setInterval(updateClock, 1000);
+    updateClock();
 
-        // ============================================================
-        //  PART 2: WEATHER + IP/LOCATION (unchanged, works fine)
-        // ============================================================
-        const weatherContent = document.getElementById('weatherContent');
-        const cityInput = document.getElementById('cityInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const ipLocationInfo = document.getElementById('ipLocationInfo');
+    // =============================================================
+    //  WEATHER + IP
+    // =============================================================
+    const weatherContent = document.getElementById('weatherContent');
+    const cityInput = document.getElementById('cityInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const ipInfo = document.getElementById('ipInfo');
 
-        async function fetchIPAndLocation() {
-            const displayEl = ipLocationInfo;
-            displayEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Detecting location...`;
-
-            let ip = 'N/A';
-            let city = 'N/A';
-            let region = 'N/A';
-            let country = 'N/A';
-
-            const apis = [
-                {
-                    url: 'https://ipapi.co/json/',
-                    parse: (d) => ({ ip: d.ip, city: d.city, region: d.region, country: d.country_name })
-                },
-                {
-                    url: 'https://ip-api.com/json/',
-                    parse: (d) => ({ ip: d.query, city: d.city, region: d.regionName, country: d.country })
-                },
-                {
-                    url: 'https://ipinfo.io/json/',
-                    parse: (d) => ({ ip: d.ip, city: d.city, region: d.region, country: d.country })
-                }
-            ];
-
-            for (const api of apis) {
-                try {
-                    const res = await fetch(api.url);
-                    if (!res.ok) throw new Error('API failed');
-                    const data = await res.json();
-                    const parsed = api.parse(data);
-                    if (parsed.ip && parsed.ip !== 'N/A' && parsed.ip !== '') {
-                        ip = parsed.ip;
-                        city = parsed.city && parsed.city !== '' ? parsed.city : city;
-                        region = parsed.region && parsed.region !== '' ? parsed.region : region;
-                        country = parsed.country && parsed.country !== '' ? parsed.country : country;
-                        break;
-                    }
-                } catch (e) {
-                    console.warn(`Failed to fetch from ${api.url}`, e);
-                }
-            }
-
-            const locationParts = [city, region, country].filter(p => p && p !== 'N/A' && p !== '');
-            const locationStr = locationParts.length ? locationParts.join(', ') : 'Unknown Location';
-
-            displayEl.innerHTML = `
-                <i class="fas fa-map-pin"></i> ${locationStr}
-                <span class="divider">|</span>
-                <i class="fas fa-network-wired"></i> <span class="ip-address">${ip}</span>
-            `;
-
-            if (!cityInput.value || cityInput.value === '') {
-                if (city && city !== 'N/A' && city !== '') {
-                    cityInput.value = city;
-                    fetchWeather(city);
+    async function getIP() {
+        try {
+            const res = await fetch('https://ip-api.com/json/');
+            const data = await res.json();
+            if (data.status === 'success') {
+                const loc = `${data.city}, ${data.regionName}, ${data.country}`;
+                ipInfo.innerHTML = `<i class="fas fa-map-pin"></i> ${loc} <span class="divider">|</span> <i class="fas fa-network-wired"></i> <span class="ip">${data.query}</span>`;
+                if (!cityInput.value || cityInput.value === '') {
+                    cityInput.value = data.city || 'Dhaka';
+                    fetchWeather(data.city || 'Dhaka');
                 } else {
+                    fetchWeather(cityInput.value);
+                }
+            } else {
+                ipInfo.innerHTML = `<i class="fas fa-map-pin"></i> Unknown <span class="divider">|</span> <i class="fas fa-network-wired"></i> N/A`;
+                if (!cityInput.value || cityInput.value === '') {
                     cityInput.value = 'Dhaka';
                     fetchWeather('Dhaka');
+                } else {
+                    fetchWeather(cityInput.value);
                 }
+            }
+        } catch {
+            ipInfo.innerHTML = `<i class="fas fa-map-pin"></i> Unknown <span class="divider">|</span> <i class="fas fa-network-wired"></i> N/A`;
+            if (!cityInput.value || cityInput.value === '') {
+                cityInput.value = 'Dhaka';
+                fetchWeather('Dhaka');
             } else {
                 fetchWeather(cityInput.value);
             }
         }
+    }
 
-        async function fetchWeather(city) {
-            if (!city || city.trim() === '') {
-                city = 'Dhaka';
-                cityInput.value = 'Dhaka';
+    async function fetchWeather(city) {
+        if (!city || city.trim() === '') {
+            city = 'Dhaka';
+            cityInput.value = 'Dhaka';
+        }
+        weatherContent.innerHTML = `<div class="loading"><i class="fas fa-spinner"></i> Fetching weather for "${city}"...</div>`;
+        try {
+            const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=en`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('API error');
+            const data = await res.json();
+            if (!data.current_condition || data.current_condition.length === 0) {
+                throw new Error('City not found');
             }
-            weatherContent.innerHTML = `
-                <div class="loading">
-                    <i class="fas fa-spinner"></i> Fetching weather for "${city}"...
-                </div>
-            `;
-            try {
-                const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1&lang=en`;
-                const res = await fetch(url);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const data = await res.json();
-                if (!data.current_condition || data.current_condition.length === 0) {
-                    throw new Error('City not found. Try a different name.');
-                }
-                renderWeather(data, city);
-            } catch (err) {
-                weatherContent.innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-exclamation-circle"></i>
-                        ${err.message}
-                        <br><small style="font-weight:400;color:#94a3b8;font-size:0.7rem;">Try "Dhaka", "Khulna", "London"</small>
-                    </div>
-                `;
-            }
+            renderWeather(data, city);
+        } catch (err) {
+            weatherContent.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${err.message}<br><small style="font-weight:400;color:#94a3b8;font-size:0.7rem;">Try "Dhaka", "Khulna", "London"</small></div>`;
+        }
+    }
+
+    function renderWeather(data, city) {
+        const cur = data.current_condition[0];
+        const nearby = data.nearest_area ? data.nearest_area[0] : null;
+        const loc = nearby ? nearby.areaName[0].value : city;
+
+        if (data.timezone) {
+            currentTimezone = data.timezone;
         }
 
-        function renderWeather(data, city) {
-            const cur = data.current_condition[0];
-            const nearby = data.nearest_area ? data.nearest_area[0] : null;
-            const loc = nearby ? nearby.areaName[0].value : city;
+        const temp = cur.temp_C || '--';
+        const feels = cur.FeelsLikeC || cur.temp_C || '--';
+        const desc = cur.weatherDesc ? cur.weatherDesc[0].value : 'Unknown';
+        const code = cur.weatherCode || '113';
+        const humidity = cur.humidity || '--';
+        const wind = cur.windspeedKmph || '--';
+        const pressure = cur.pressure || '--';
+        const vis = cur.visibility || '--';
+        const uv = cur.uvIndex || '--';
 
-            const temp = cur.temp_C || '--';
-            const desc = cur.weatherDesc ? cur.weatherDesc[0].value : 'Unknown';
-            const code = cur.weatherCode || '113';
-            const humidity = cur.humidity || '--';
-            const wind = cur.windspeedKmph || '--';
-            const pressure = cur.pressure || '--';
-            const vis = cur.visibility || '--';
-            const uv = cur.uvIndex || '--';
-
-            const icons = {
-                '113': '☀️', '116': '⛅', '119': '☁️', '122': '☁️', '143': '🌫️',
-                '176': '🌦️', '179': '🌨️', '182': '🌧️', '185': '🌧️', '200': '⛈️',
-                '227': '🌨️', '230': '❄️', '248': '🌫️', '260': '🌫️', '263': '🌦️',
-                '266': '🌧️', '281': '🌧️', '284': '🌧️', '293': '🌦️', '296': '🌧️',
-                '299': '🌧️', '302': '🌧️', '305': '🌧️', '308': '🌧️', '311': '🌨️',
-                '314': '🌨️', '317': '🌨️', '320': '🌨️', '323': '❄️', '326': '❄️',
-                '329': '❄️', '332': '❄️', '335': '🌨️', '338': '❄️', '350': '🌧️',
-                '353': '🌦️', '356': '🌧️', '359': '🌧️', '362': '🌨️', '365': '🌨️',
-                '368': '🌨️', '371': '❄️', '377': '🌨️', '386': '⛈️', '389': '⛈️',
-                '392': '⛈️', '395': '❄️'
-            };
-            const icon = icons[code] || '🌤️';
-
-            weatherContent.innerHTML = `
-                <div class="weather-display">
-                    <span class="weather-icon">${icon}</span>
-                    <div class="weather-temp">${temp}<sup>°C</sup></div>
-                    <div class="weather-desc">${desc}</div>
-                    <div class="weather-location"><i class="fas fa-map-pin"></i> ${loc}</div>
-                </div>
-                <div class="details-grid">
-                    <div class="detail-item"><i class="fas fa-tint"></i><div class="label">Humidity</div><div class="value">${humidity}%</div></div>
-                    <div class="detail-item"><i class="fas fa-wind"></i><div class="label">Wind</div><div class="value">${wind} km/h</div></div>
-                    <div class="detail-item"><i class="fas fa-compress-alt"></i><div class="label">Pressure</div><div class="value">${pressure} mb</div></div>
-                    <div class="detail-item"><i class="fas fa-eye"></i><div class="label">Visibility</div><div class="value">${vis} km</div></div>
-                    <div class="detail-item"><i class="fas fa-sun"></i><div class="label">UV Index</div><div class="value">${uv}</div></div>
-                    <div class="detail-item"><i class="fas fa-thermometer-half"></i><div class="label">Feels Like</div><div class="value">${temp}°C</div></div>
-                </div>
-            `;
+        let aqi = 'N/A';
+        if (data.airQuality && data.airQuality.pm25) {
+            aqi = data.airQuality.pm25;
         }
 
-        searchBtn.addEventListener('click', () => {
-            const city = cityInput.value.trim();
-            if (city) fetchWeather(city);
-        });
+        let sunrise = '--', sunset = '--';
+        if (data.weather && data.weather[0] && data.weather[0].astronomy && data.weather[0].astronomy[0]) {
+            sunrise = data.weather[0].astronomy[0].sunrise || '--';
+            sunset = data.weather[0].astronomy[0].sunset || '--';
+        }
 
-        cityInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') searchBtn.click();
-        });
+        const icons = {
+            '113':'☀️','116':'⛅','119':'☁️','122':'☁️','143':'🌫️',
+            '176':'🌦️','179':'🌨️','182':'🌧️','185':'🌧️','200':'⛈️',
+            '227':'🌨️','230':'❄️','248':'🌫️','260':'🌫️','263':'🌦️',
+            '266':'🌧️','281':'🌧️','284':'🌧️','293':'🌦️','296':'🌧️',
+            '299':'🌧️','302':'🌧️','305':'🌧️','308':'🌧️','311':'🌨️',
+            '314':'🌨️','317':'🌨️','320':'🌨️','323':'❄️','326':'❄️',
+            '329':'❄️','332':'❄️','335':'🌨️','338':'❄️','350':'🌧️',
+            '353':'🌦️','356':'🌧️','359':'🌧️','362':'🌨️','365':'🌨️',
+            '368':'🌨️','371':'❄️','377':'🌨️','386':'⛈️','389':'⛈️',
+            '392':'⛈️','395':'❄️'
+        };
+        const icon = icons[code] || '🌤️';
 
-        setInterval(() => {
-            const city = cityInput.value.trim();
-            if (city) fetchWeather(city);
-        }, 600000);
+        weatherContent.innerHTML = `
+            <div class="weather-display">
+                <span class="weather-icon">${icon}</span>
+                <div class="weather-temp">${temp}<sup>°C</sup></div>
+                <div class="weather-desc">${desc}</div>
+                <div class="weather-location"><i class="fas fa-map-pin"></i> ${loc}</div>
+            </div>
+            <div class="details-grid">
+                <div class="detail-item"><i class="fas fa-tint"></i><div class="label">Humidity</div><div class="value">${humidity}%</div></div>
+                <div class="detail-item"><i class="fas fa-wind"></i><div class="label">Wind</div><div class="value">${wind} km/h</div></div>
+                <div class="detail-item"><i class="fas fa-compress-alt"></i><div class="label">Pressure</div><div class="value">${pressure} mb</div></div>
+                <div class="detail-item"><i class="fas fa-eye"></i><div class="label">Visibility</div><div class="value">${vis} km</div></div>
+                <div class="detail-item"><i class="fas fa-sun"></i><div class="label">UV Index</div><div class="value">${uv}</div></div>
+                <div class="detail-item"><i class="fas fa-thermometer-half"></i><div class="label">Feels Like</div><div class="value">${feels}°C</div></div>
+            </div>
+            <div class="astro-grid">
+                <div class="astro-item"><i class="fas fa-sunrise"></i><div class="label">Sunrise</div><div class="value">${sunrise}</div></div>
+                <div class="astro-item"><i class="fas fa-sunset"></i><div class="label">Sunset</div><div class="value">${sunset}</div></div>
+                <div class="astro-item"><i class="fas fa-leaf"></i><div class="label">AQI (PM2.5)</div><div class="value">${aqi}</div></div>
+            </div>
+        `;
 
-        fetchIPAndLocation();
-    </script>
+        updateClock();
+    }
+
+    searchBtn.addEventListener('click', () => {
+        const city = cityInput.value.trim();
+        if (city) fetchWeather(city);
+    });
+    cityInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchBtn.click();
+    });
+
+    setInterval(() => {
+        const city = cityInput.value.trim();
+        if (city) fetchWeather(city);
+    }, 600000);
+
+    getIP();
+</script>
 
 </body>
 </html>
