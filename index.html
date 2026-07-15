@@ -34,7 +34,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* === Main Container (Glass) === */
         .container {
             max-width: 960px;
             width: 100%;
@@ -113,7 +112,7 @@
             50% { opacity: 0.3; transform: scale(0.8); }
         }
 
-        /* === Grid Layout (Clock + Weather) === */
+        /* === Grid Layout === */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -121,9 +120,7 @@
             align-items: start;
         }
 
-        /* ============================================
-                   LEFT: CLOCK PANEL
-                ============================================ */
+        /* ===== LEFT: CLOCK ===== */
         .clock-panel {
             display: flex;
             flex-direction: column;
@@ -192,9 +189,14 @@
             margin-left: 4px;
         }
 
+        /* ★★★ DATE DISPLAY - FIXED & CLEAR ★★★ */
         .date-info {
             text-align: center;
-            margin-top: 6px;
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
 
         .date-info .day {
@@ -205,16 +207,18 @@
             text-transform: uppercase;
         }
 
-        .date-info .date {
+        .date-info .full-date {
             font-size: 0.95rem;
-            font-weight: 400;
-            color: #64748b;
-            letter-spacing: 0.5px;
+            font-weight: 500;
+            color: #334155;
+            letter-spacing: 0.3px;
+            background: rgba(255,255,255,0.3);
+            padding: 2px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        /* ============================================
-                   RIGHT: WEATHER PANEL
-                ============================================ */
+        /* ===== RIGHT: WEATHER ===== */
         .weather-panel {
             background: rgba(255, 255, 255, 0.25);
             border-radius: 28px;
@@ -222,7 +226,6 @@
             border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
-        /* ★★★ NEW: IP & Location Info Bar (Updated Fallback) ★★★ */
         .ip-location-info {
             background: rgba(255, 255, 255, 0.5);
             border-radius: 40px;
@@ -279,11 +282,13 @@
             color: #0f172a;
             outline: none;
             transition: all 0.3s ease;
+            text-transform: capitalize;
         }
 
         .search-box input::placeholder {
             color: #94a3b8;
             font-weight: 400;
+            text-transform: none;
         }
 
         .search-box input:focus {
@@ -355,7 +360,6 @@
             margin-right: 4px;
         }
 
-        /* Weather Details Grid (2 columns) */
         .details-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -399,7 +403,6 @@
             color: #0f172a;
         }
 
-        /* Loading & Error */
         .loading, .error {
             text-align: center;
             padding: 20px 0;
@@ -425,7 +428,6 @@
             margin-bottom: 4px;
         }
 
-        /* === Footer === */
         .footer {
             margin-top: 28px;
             text-align: center;
@@ -441,7 +443,6 @@
             margin: 0 4px;
         }
 
-        /* === Responsive === */
         @media (max-width: 750px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -488,13 +489,12 @@
             </div>
         </div>
 
-        <!-- === GRID: CLOCK + WEATHER === -->
+        <!-- === GRID === -->
         <div class="dashboard-grid">
 
             <!-- ===== LEFT: CLOCK ===== -->
             <div class="clock-panel">
                 <canvas id="clockCanvas" width="400" height="400"></canvas>
-
                 <div class="digital-time">
                     <span class="time-block" id="hr">00</span>
                     <span class="colon">:</span>
@@ -504,26 +504,22 @@
                     <span class="sec" id="secSmall"></span>
                     <span class="ampm" id="ampm">AM</span>
                 </div>
-
+                <!-- ★★★ FIXED DATE DISPLAY ★★★ -->
                 <div class="date-info">
                     <div class="day" id="dayDisplay">Monday</div>
-                    <div class="date" id="dateDisplay">January 1, 2024</div>
+                    <div class="full-date" id="dateDisplay">January 1, 2024</div>
                 </div>
             </div>
 
-            <!-- ===== RIGHT: WEATHER + IP ===== -->
+            <!-- ===== RIGHT: WEATHER ===== -->
             <div class="weather-panel">
-
-                <!-- ★★★ NEW: Location + IP Display (Multiple API Backup) ★★★ -->
                 <div id="ipLocationInfo" class="ip-location-info">
                     <i class="fas fa-spinner fa-spin"></i> Detecting location & IP...
                 </div>
-
                 <div class="search-box">
-                    <input type="text" id="cityInput" placeholder="Search city..." value="Dhaka">
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    <input type="text" id="cityInput" placeholder="Search city (e.g. Khulna, Dhaka)" value="Dhaka">
+                    <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
                 </div>
-
                 <div id="weatherContent">
                     <div class="loading">
                         <i class="fas fa-spinner"></i> Loading weather...
@@ -533,7 +529,6 @@
 
         </div>
 
-        <!-- === FOOTER === -->
         <div class="footer">
             <i class="fas fa-shield-alt"></i> 2026 · Internal Network · <i class="fas fa-bolt" style="color:#f59e0b;"></i> Smart Dashboard
         </div>
@@ -687,11 +682,24 @@
             secSmall.textContent = s;
             ampmSpan.textContent = ampm;
 
-            const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            // ★★★ DATE FIX: Use 'en-GB' for consistent day-month-year order ★★★
+            const opts = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                timeZone: 'Asia/Dhaka'  // বাংলাদেশ টাইমজোন
+            };
             const full = now.toLocaleDateString('en-US', opts);
+            // Split: "Wednesday, July 15, 2026" -> ["Wednesday,", "July", "15,", "2026"]
             const parts = full.split(' ');
-            daySpan.textContent = parts[0];
-            dateSpan.textContent = parts.slice(1).join(' ');
+            const dayName = parts[0].replace(',', ''); // "Wednesday"
+            // Rest: "July 15, 2026"
+            const rest = parts.slice(1).join(' ').replace(',', ''); 
+            // Now format: "July 15, 2026" – clean
+
+            daySpan.textContent = dayName.toUpperCase();
+            dateSpan.textContent = rest;
         }
 
         function updateClock() {
@@ -702,14 +710,13 @@
         updateClock();
 
         // ============================================================
-        //  PART 2: LIVE WEATHER + IP & LOCATION (MULTI API BACKUP)
+        //  PART 2: WEATHER + IP/LOCATION (unchanged, works fine)
         // ============================================================
         const weatherContent = document.getElementById('weatherContent');
         const cityInput = document.getElementById('cityInput');
         const searchBtn = document.getElementById('searchBtn');
         const ipLocationInfo = document.getElementById('ipLocationInfo');
 
-        // --- Fetch & display IP and Location with Fallback APIs ---
         async function fetchIPAndLocation() {
             const displayEl = ipLocationInfo;
             displayEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Detecting location...`;
@@ -719,7 +726,6 @@
             let region = 'N/A';
             let country = 'N/A';
 
-            // List of free IP/Geo APIs to try (in order of preference)
             const apis = [
                 {
                     url: 'https://ipapi.co/json/',
@@ -741,45 +747,45 @@
                     if (!res.ok) throw new Error('API failed');
                     const data = await res.json();
                     const parsed = api.parse(data);
-                    
-                    // If we got a valid IP, use the data
                     if (parsed.ip && parsed.ip !== 'N/A' && parsed.ip !== '') {
                         ip = parsed.ip;
                         city = parsed.city && parsed.city !== '' ? parsed.city : city;
                         region = parsed.region && parsed.region !== '' ? parsed.region : region;
                         country = parsed.country && parsed.country !== '' ? parsed.country : country;
-                        break; // Success, stop trying other APIs
+                        break;
                     }
                 } catch (e) {
                     console.warn(`Failed to fetch from ${api.url}`, e);
                 }
             }
 
-            // Build location string (remove N/A parts)
             const locationParts = [city, region, country].filter(p => p && p !== 'N/A' && p !== '');
             const locationStr = locationParts.length ? locationParts.join(', ') : 'Unknown Location';
 
-            // Update the IP/Location bar
             displayEl.innerHTML = `
                 <i class="fas fa-map-pin"></i> ${locationStr}
                 <span class="divider">|</span>
                 <i class="fas fa-network-wired"></i> <span class="ip-address">${ip}</span>
             `;
 
-            // Set weather city based on detected city, or fallback to Dhaka
-            if (city && city !== 'N/A' && city !== '') {
-                cityInput.value = city;
-                fetchWeather(city);
-            } else if (!cityInput.value || cityInput.value === '') {
-                cityInput.value = 'Dhaka';
-                fetchWeather('Dhaka');
+            if (!cityInput.value || cityInput.value === '') {
+                if (city && city !== 'N/A' && city !== '') {
+                    cityInput.value = city;
+                    fetchWeather(city);
+                } else {
+                    cityInput.value = 'Dhaka';
+                    fetchWeather('Dhaka');
+                }
             } else {
                 fetchWeather(cityInput.value);
             }
         }
 
-        // --- Fetch Weather (wttr.in) ---
         async function fetchWeather(city) {
+            if (!city || city.trim() === '') {
+                city = 'Dhaka';
+                cityInput.value = 'Dhaka';
+            }
             weatherContent.innerHTML = `
                 <div class="loading">
                     <i class="fas fa-spinner"></i> Fetching weather for "${city}"...
@@ -791,7 +797,7 @@
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 if (!data.current_condition || data.current_condition.length === 0) {
-                    throw new Error('City not found.');
+                    throw new Error('City not found. Try a different name.');
                 }
                 renderWeather(data, city);
             } catch (err) {
@@ -799,7 +805,7 @@
                     <div class="error">
                         <i class="fas fa-exclamation-circle"></i>
                         ${err.message}
-                        <br><small style="font-weight:400;color:#94a3b8;font-size:0.7rem;">Try "Dhaka", "London"</small>
+                        <br><small style="font-weight:400;color:#94a3b8;font-size:0.7rem;">Try "Dhaka", "Khulna", "London"</small>
                     </div>
                 `;
             }
@@ -851,22 +857,20 @@
             `;
         }
 
-        // --- Event Listeners ---
         searchBtn.addEventListener('click', () => {
             const city = cityInput.value.trim();
             if (city) fetchWeather(city);
         });
+
         cityInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') searchBtn.click();
         });
 
-        // Auto-refresh weather every 10 minutes
         setInterval(() => {
             const city = cityInput.value.trim();
             if (city) fetchWeather(city);
         }, 600000);
 
-        // --- INIT: Load IP + Location + Weather ---
         fetchIPAndLocation();
     </script>
 
